@@ -19,55 +19,58 @@ import {
   Clock
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useLeads, useDashboardStats, useApiMutation } from '../hooks/useApi'
+import { apiService } from '../lib/api'
 
 const Dashboard = () => {
   const { user, signOut } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
-  const [leads, setLeads] = useState([])
-  const [loading, setLoading] = useState(true)
+  
+  // Use API hooks for real data
+  const { data: leads, loading: leadsLoading, error: leadsError, refetch: refetchLeads } = useLeads()
+  const { data: dashboardStats, loading: statsLoading, error: statsError } = useDashboardStats()
+  const { mutate, loading: mutationLoading } = useApiMutation()
 
-  // Mock data for demonstration
-  useEffect(() => {
-    const mockLeads = [
-      {
-        id: 1,
-        name: 'Max Mustermann',
-        email: 'max@mustermann.de',
-        company: 'Mustermann GmbH',
-        status: 'new',
-        source: 'Website',
-        created_at: '2025-08-24T10:30:00Z',
-        score: 85
-      },
-      {
-        id: 2,
-        name: 'Anna Schmidt',
-        email: 'anna@techstart.de',
-        company: 'TechStart AG',
-        status: 'contacted',
-        source: 'LinkedIn',
-        created_at: '2025-08-24T09:15:00Z',
-        score: 92
-      },
-      {
-        id: 3,
-        name: 'Thomas Weber',
-        email: 'thomas@innovation.com',
-        company: 'Innovation Hub',
-        status: 'qualified',
-        source: 'Google Ads',
-        created_at: '2025-08-24T08:45:00Z',
-        score: 78
-      }
-    ]
-    
-    setTimeout(() => {
-      setLeads(mockLeads)
-      setLoading(false)
-    }, 1000)
-  }, [])
+  // Fallback to mock data if API fails or returns no data
+  const mockLeads = [
+    {
+      id: 1,
+      name: 'Max Mustermann',
+      email: 'max@mustermann.de',
+      company: 'Mustermann GmbH',
+      status: 'new',
+      source: 'Website',
+      created_at: '2025-08-24T10:30:00Z',
+      score: 85
+    },
+    {
+      id: 2,
+      name: 'Anna Schmidt',
+      email: 'anna@techstart.de',
+      company: 'TechStart AG',
+      status: 'contacted',
+      source: 'LinkedIn',
+      created_at: '2025-08-24T09:15:00Z',
+      score: 92
+    },
+    {
+      id: 3,
+      name: 'Thomas Weber',
+      email: 'thomas@innovation.com',
+      company: 'Innovation Hub',
+      status: 'qualified',
+      source: 'Google Ads',
+      created_at: '2025-08-24T08:45:00Z',
+      score: 78
+    }
+  ]
 
-  const stats = [
+  // Use real data if available, otherwise fallback to mock data
+  const displayLeads = leads && leads.length > 0 ? leads : mockLeads
+  const loading = leadsLoading || statsLoading
+
+  // Use real stats if available, otherwise fallback to mock data
+  const defaultStats = [
     {
       title: 'Gesamt Leads',
       value: '1,247',
@@ -97,6 +100,8 @@ const Dashboard = () => {
       icon: Target
     }
   ]
+
+  const stats = dashboardStats || defaultStats
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -130,6 +135,34 @@ const Dashboard = () => {
 
   const handleSignOut = async () => {
     await signOut()
+  }
+
+  // Lead management functions
+  const handleCreateLead = async (leadData) => {
+    try {
+      await mutate(() => apiService.createLead(leadData))
+      refetchLeads()
+    } catch (error) {
+      console.error('Failed to create lead:', error)
+    }
+  }
+
+  const handleUpdateLead = async (id, leadData) => {
+    try {
+      await mutate(() => apiService.updateLead(id, leadData))
+      refetchLeads()
+    } catch (error) {
+      console.error('Failed to update lead:', error)
+    }
+  }
+
+  const handleDeleteLead = async (id) => {
+    try {
+      await mutate(() => apiService.deleteLead(id))
+      refetchLeads()
+    } catch (error) {
+      console.error('Failed to delete lead:', error)
+    }
   }
 
   return (
@@ -338,7 +371,7 @@ const Dashboard = () => {
                         </td>
                       </tr>
                     ) : (
-                      leads.map((lead) => (
+                      displayLeads.map((lead) => (
                         <tr key={lead.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
