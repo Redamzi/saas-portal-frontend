@@ -1,8 +1,32 @@
 import { Button } from '@/components/ui/button.jsx'
-import { ArrowRight, Play } from 'lucide-react'
+import { ArrowRight, Play, User } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Hero = () => {
+  const { signInDemo } = useAuth()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleDemoAccess = async () => {
+    setIsLoading(true)
+    try {
+      const { data, error } = await signInDemo()
+      if (data.user && !error) {
+        navigate('/dashboard')
+      } else {
+        console.error('Demo login failed:', error)
+        alert('Demo-Zugang konnte nicht erstellt werden. Bitte versuchen Sie es erneut.')
+      }
+    } catch (err) {
+      console.error('Demo login error:', err)
+      alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-blue-50 overflow-hidden">
       {/* Background decoration */}
@@ -67,6 +91,17 @@ const Hero = () => {
             >
               <Play className="mr-2 h-5 w-5" />
               Demo ansehen
+            </Button>
+
+            <Button 
+              onClick={handleDemoAccess}
+              disabled={isLoading}
+              variant="outline" 
+              size="lg"
+              className="border-2 border-green-300 hover:border-green-400 text-green-700 hover:text-green-800 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 group"
+            >
+              <User className="mr-2 h-5 w-5" />
+              {isLoading ? 'Wird geladen...' : 'Demo-Zugang'}
             </Button>
           </motion.div>
 
