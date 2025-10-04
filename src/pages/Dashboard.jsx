@@ -24,6 +24,15 @@ import { getDashboardStats, getRecentActivities } from '../lib/supabaseService';
 const Dashboard = () => {
   const { user, signOut } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false)
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    company: '',
+    source: 'Website',
+    phone: '',
+    notes: ''
+  })
   
   // Use API hooks for real data
   const { data: leads, loading: leadsLoading, error: leadsError, refetch: refetchLeads } = useLeads()
@@ -129,6 +138,48 @@ const Dashboard = () => {
         return 'Abgeschlossen'
       default:
         return status
+    }
+  }
+
+  // Handle adding new lead
+  const handleAddLead = async () => {
+    try {
+      // Validate required fields
+      if (!newLead.name || !newLead.email || !newLead.company) {
+        alert('Bitte füllen Sie alle Pflichtfelder aus.')
+        return
+      }
+
+      // Add lead via API
+      await mutate({
+        endpoint: '/api/leads',
+        method: 'POST',
+        data: {
+          ...newLead,
+          status: 'new',
+          score: Math.floor(Math.random() * 40) + 60, // Random score 60-100
+          created_at: new Date().toISOString()
+        }
+      })
+
+      // Reset form and close modal
+      setNewLead({
+        name: '',
+        email: '',
+        company: '',
+        source: 'Website',
+        phone: '',
+        notes: ''
+      })
+      setShowAddLeadModal(false)
+      
+      // Refresh leads list
+      refetchLeads()
+      
+      alert('Lead erfolgreich hinzugefügt!')
+    } catch (error) {
+      console.error('Error adding lead:', error)
+      alert('Fehler beim Hinzufügen des Leads.')
     }
   }
 
@@ -303,7 +354,10 @@ const Dashboard = () => {
                   <p className="text-gray-600 mt-1">Verwalten Sie Ihre generierten Leads</p>
                 </div>
                 <div className="mt-4 sm:mt-0 flex space-x-3">
-                  <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  <button 
+                    onClick={() => setShowAddLeadModal(true)}
+                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Neuer Lead
                   </button>
@@ -453,6 +507,125 @@ const Dashboard = () => {
           </motion.div>
         )}
       </div>
+
+      {/* Add Lead Modal */}
+      {showAddLeadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Neuen Lead hinzufügen</h3>
+              <button
+                onClick={() => setShowAddLeadModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={(e) => { e.preventDefault(); handleAddLead(); }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  value={newLead.name}
+                  onChange={(e) => setNewLead({ ...newLead, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  E-Mail *
+                </label>
+                <input
+                  type="email"
+                  value={newLead.email}
+                  onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Unternehmen *
+                </label>
+                <input
+                  type="text"
+                  value={newLead.company}
+                  onChange={(e) => setNewLead({ ...newLead, company: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Telefon
+                </label>
+                <input
+                  type="tel"
+                  value={newLead.phone}
+                  onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quelle
+                </label>
+                <select
+                  value={newLead.source}
+                  onChange={(e) => setNewLead({ ...newLead, source: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Website">Website</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="Google Ads">Google Ads</option>
+                  <option value="Referral">Empfehlung</option>
+                  <option value="Cold Email">Cold Email</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notizen
+                </label>
+                <textarea
+                  value={newLead.notes}
+                  onChange={(e) => setNewLead({ ...newLead, notes: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Zusätzliche Informationen..."
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddLeadModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="submit"
+                  disabled={mutationLoading}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {mutationLoading ? 'Speichern...' : 'Lead hinzufügen'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
