@@ -18,9 +18,8 @@ import {
   Calendar,
   Clock
 } from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
-import { useLeads, useDashboardStats, useApiMutation } from '../hooks/useApi'
-import { apiService } from '../lib/api'
+import { useAuth } from '../contexts/AuthContext';
+import { getDashboardStats, getRecentActivities } from '../lib/supabaseService';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth()
