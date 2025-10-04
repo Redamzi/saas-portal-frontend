@@ -486,11 +486,171 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-lg shadow-sm p-8 text-center"
           >
-            <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Kampagnen-Management</h3>
-            <p className="text-gray-600">Diese Funktion wird bald verfügbar sein.</p>
+            {/* Campaigns Header */}
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Kampagnen-Management</h2>
+                  <p className="text-gray-600 mt-1">Erstellen und verwalten Sie Ihre E-Mail-Kampagnen</p>
+                </div>
+                <div className="mt-4 sm:mt-0 flex space-x-3">
+                  <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Neue Kampagne
+                  </button>
+                  <button className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </button>
+                </div>
+              </div>
+
+              {/* Campaign Stats */}
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <Mail className="h-8 w-8 text-blue-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-blue-600">Aktive Kampagnen</p>
+                      <p className="text-2xl font-bold text-blue-900">12</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <TrendingUp className="h-8 w-8 text-green-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-green-600">Öffnungsrate</p>
+                      <p className="text-2xl font-bold text-green-900">24.5%</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <Target className="h-8 w-8 text-purple-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-purple-600">Klickrate</p>
+                      <p className="text-2xl font-bold text-purple-900">3.8%</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-4">
+                  <div className="flex items-center">
+                    <Users className="h-8 w-8 text-orange-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-orange-600">Erreichte Leads</p>
+                      <p className="text-2xl font-bold text-orange-900">1,247</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Campaigns Table */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Kampagne
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Empfänger
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Öffnungsrate
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Klickrate
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Erstellt
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Aktionen
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {[
+                      {
+                        id: 1,
+                        name: 'Produktvorstellung Q4',
+                        status: 'active',
+                        recipients: 1247,
+                        openRate: 24.5,
+                        clickRate: 3.8,
+                        created: '2025-08-20T10:00:00Z'
+                      },
+                      {
+                        id: 2,
+                        name: 'Newsletter September',
+                        status: 'completed',
+                        recipients: 892,
+                        openRate: 28.2,
+                        clickRate: 4.1,
+                        created: '2025-08-15T14:30:00Z'
+                      },
+                      {
+                        id: 3,
+                        name: 'Willkommens-Serie',
+                        status: 'draft',
+                        recipients: 0,
+                        openRate: 0,
+                        clickRate: 0,
+                        created: '2025-08-22T09:15:00Z'
+                      }
+                    ].map((campaign) => (
+                      <tr key={campaign.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            campaign.status === 'active' ? 'bg-green-100 text-green-800' :
+                            campaign.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {campaign.status === 'active' ? 'Aktiv' :
+                             campaign.status === 'completed' ? 'Abgeschlossen' : 'Entwurf'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {campaign.recipients.toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {campaign.openRate}%
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {campaign.clickRate}%
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(campaign.created).toLocaleDateString('de-DE')}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex items-center justify-end space-x-2">
+                            <button className="text-blue-600 hover:text-blue-900">
+                              <Eye className="h-4 w-4" />
+                            </button>
+                            <button className="text-gray-600 hover:text-gray-900">
+                              <Edit className="h-4 w-4" />
+                            </button>
+                            <button className="text-red-600 hover:text-red-900">
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </motion.div>
         )}
 
@@ -499,11 +659,256 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-lg shadow-sm p-8 text-center"
           >
-            <Settings className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Einstellungen</h3>
-            <p className="text-gray-600">Konto- und Systemeinstellungen werden hier verfügbar sein.</p>
+            {/* Settings Header */}
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Einstellungen</h2>
+              <p className="text-gray-600 mt-1">Verwalten Sie Ihr Konto und Ihre Systemeinstellungen</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Account Settings */}
+              <div className="lg:col-span-2">
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Konto-Einstellungen</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Vorname
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue="Max"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Nachname
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue="Mustermann"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        E-Mail-Adresse
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue="amzi@me.com"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Unternehmen
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue="Voyanero GmbH"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Telefon
+                      </label>
+                      <input
+                        type="tel"
+                        defaultValue="+49 123 456789"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex justify-end">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      Änderungen speichern
+                    </button>
+                  </div>
+                </div>
+
+                {/* API Settings */}
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">API-Einstellungen</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        API-Schlüssel
+                      </label>
+                      <div className="flex">
+                        <input
+                          type="password"
+                          defaultValue="voy_sk_1234567890abcdef"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          readOnly
+                        />
+                        <button className="px-4 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg hover:bg-gray-200 transition-colors">
+                          <Eye className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Verwenden Sie diesen Schlüssel für API-Aufrufe
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Webhook-URL
+                      </label>
+                      <input
+                        type="url"
+                        defaultValue="https://api.voyanero.com/webhook/leads"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        URL für eingehende Lead-Benachrichtigungen
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex justify-end">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      API-Einstellungen speichern
+                    </button>
+                  </div>
+                </div>
+
+                {/* Email Settings */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">E-Mail-Einstellungen</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Absender-Name
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue="Voyanero Team"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Absender-E-Mail
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue="noreply@voyanero.com"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Tägliches E-Mail-Limit
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue="1000"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Maximale Anzahl E-Mails pro Tag
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex justify-end">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      E-Mail-Einstellungen speichern
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar */}
+              <div className="space-y-6">
+                {/* Subscription Info */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Abonnement</h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Plan:</span>
+                      <span className="text-sm font-medium text-gray-900">Professional</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Preis:</span>
+                      <span className="text-sm font-medium text-gray-900">€149/Monat</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Nächste Abrechnung:</span>
+                      <span className="text-sm font-medium text-gray-900">15. Sep 2025</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Leads verbleibend:</span>
+                      <span className="text-sm font-medium text-green-600">1,753 / 2,000</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                      Plan upgraden
+                    </button>
+                  </div>
+                </div>
+
+                {/* Security */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Sicherheit</h3>
+                  
+                  <div className="space-y-3">
+                    <button className="w-full text-left px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700">Passwort ändern</span>
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      </div>
+                    </button>
+                    
+                    <button className="w-full text-left px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700">2FA aktivieren</span>
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      </div>
+                    </button>
+                    
+                    <button className="w-full text-left px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700">Login-Verlauf</span>
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Danger Zone */}
+                <div className="bg-white rounded-lg shadow-sm p-6 border border-red-200">
+                  <h3 className="text-lg font-medium text-red-900 mb-4">Gefahrenbereich</h3>
+                  
+                  <div className="space-y-3">
+                    <button className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
+                      Konto löschen
+                    </button>
+                    <p className="text-xs text-red-600">
+                      Diese Aktion kann nicht rückgängig gemacht werden.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </div>
